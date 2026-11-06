@@ -279,6 +279,18 @@ const agentProviderCatalog: Record<AgentProviderId, { name: string; company: str
   claude: { name: "Claude Code", company: "Anthropic", protocol: "claude-print-v1", model: "跟随 Claude 配置", models: [] },
   gemini: { name: "Gemini CLI", company: "Google", protocol: "gemini-headless-v1", model: "跟随 Gemini 配置", models: [] },
   opencode: { name: "OpenCode", company: "多供应商", protocol: "opencode-jsonl-v1", model: "跟随 OpenCode 配置", models: [] },
+  agy: {
+    name: "AGY",
+    company: "AGY CLI",
+    protocol: "agy-print-v1",
+    model: "claude-sonnet-5-5-low",
+    models: [
+      { value: "claude-sonnet-5-5-low", label: "Claude Sonnet 5.5 (Low)" },
+      { value: "claude-sonnet-5-5-medium", label: "Claude Sonnet 5.5 (Medium)" },
+      { value: "claude-sonnet-5-5-high", label: "Claude Sonnet 5.5 (High)" },
+      { value: "claude-opus-5-5-medium", label: "Claude Opus 5.5 (Medium)" },
+    ],
+  },
 };
 
 function ccSwitchProvidersForAgent(sync: CcSwitchSync | null, agentProvider: AgentProviderId) {
@@ -585,7 +597,7 @@ function loadAgentConversations(payload?: unknown): AgentConversation[] {
       ? conversations
           .filter((conversation) => conversation?.id && conversation?.projectId && conversation?.title)
           .map((conversation) => {
-            const provider: AgentProviderId = ["codex", "claude", "gemini", "opencode"].includes(conversation.provider) ? conversation.provider : "codex";
+            const provider: AgentProviderId = ["codex", "claude", "gemini", "opencode", "agy"].includes(conversation.provider) ? conversation.provider : "codex";
             return {
               id: String(conversation.id),
               projectId: String(conversation.projectId),
