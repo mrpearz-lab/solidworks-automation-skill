@@ -1287,7 +1287,7 @@ fn is_queue_metadata_path(path: &Path) -> bool {
     )
 }
 
-/// @brief 固定运行时与四种 Agent 的命令名，覆盖现有 PATH 回退。
+/// @brief 固定运行时与五种 Agent 的命令名，覆盖现有 PATH 回退。
 fn supported_program_name(program: &str) -> bool {
     matches!(
         program,
@@ -1303,6 +1303,8 @@ fn supported_program_name(program: &str) -> bool {
             | "gemini.exe"
             | "opencode"
             | "opencode.exe"
+            | "agy"
+            | "agy.exe"
     )
 }
 
@@ -1321,6 +1323,8 @@ fn command_exists(program: &str, args: &[&str]) -> bool {
         "gemini.exe" => Command::new("gemini.exe"),
         "opencode" => Command::new("opencode"),
         "opencode.exe" => Command::new("opencode.exe"),
+        "agy" => Command::new("agy"),
+        "agy.exe" => Command::new("agy.exe"),
         _ => return false,
     };
     command.args(args).arg("--version");
@@ -1817,6 +1821,12 @@ fn collect_agent_provider_health(app: &AppHandle) -> Vec<Value> {
             "OpenCode",
             &[],
             is_live_verified("opencode", "opencode-jsonl-v1"),
+        ),
+        agent_provider_health(
+            "agy",
+            "AGY",
+            &[],
+            is_live_verified("agy", "agy-print-v1"),
         ),
     ]
 }
