@@ -1824,12 +1824,7 @@ fn collect_agent_provider_health(app: &AppHandle) -> Vec<Value> {
             &[],
             is_live_verified("opencode", "opencode-jsonl-v1"),
         ),
-        agent_provider_health(
-            "agy",
-            "AGY",
-            &[],
-            is_live_verified("agy", "agy-print-v1"),
-        ),
+        agent_provider_health("agy", "AGY", &[], is_live_verified("agy", "agy-print-v1")),
     ]
 }
 
