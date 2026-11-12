@@ -292,6 +292,12 @@ const agentProviderCatalog: Record<AgentProviderId, { name: string; company: str
       { value: "claude-opus-5-5-medium", label: "Claude Opus 5.5 (Medium)" },
       { value: "claude-opus-5-5-high", label: "Claude Opus 5.5 (High)" },
       { value: "gpt-oss-120b-medium", label: "GPT-OSS 120B (Medium)" },
+      { value: "gemini-3.8-flash-low", label: "Gemini 3.8 Flash (Low)" },
+      { value: "gemini-3.8-flash-medium", label: "Gemini 3.8 Flash (Medium)" },
+      { value: "gemini-3.8-flash-high", label: "Gemini 3.8 Flash (High)" },
+      { value: "gemini-4-argon-low", label: "Gemini 4 Argon (Low)" },
+      { value: "gemini-4-argon-medium", label: "Gemini 4 Argon (Medium)" },
+      { value: "gemini-4-argon-high", label: "Gemini 4 Argon (High)" },
     ],
   },
 };
