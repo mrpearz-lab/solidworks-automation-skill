@@ -72,8 +72,17 @@ def validate_known_format(kind: str, path: Path) -> dict[str, Any] | None:
         }
 
     if extension == ".stl":
-        ascii_valid = text.lstrip().startswith("SOLID") and "ENDSOLID" in text
-        binary_valid = len(sample) >= 84 and not text.lstrip().startswith("SOLID")
+        sample_lstripped = text.lstrip()
+        ascii_valid = sample_lstripped.startswith("SOLID") and "ENDSOLID" in text
+        binary_valid = len(sample) >= 84 and not sample_lstripped.startswith("SOLID")
+        if not binary_valid and sample_lstripped.startswith("SOLID") and len(sample) >= 84:
+            # SolidWorks 等工具导出的二进制 STL 会把 "solid <名称>" 写入 80 字节文件头，
+            # 不能仅凭开头字母判定为 ASCII；用三角面数与文件长度核对二进制结构。
+            triangle_count = int.from_bytes(sample[80:84], "little")
+            if len(sample) < 1024 * 1024:
+                binary_valid = triangle_count > 0 and len(sample) == 84 + 50 * triangle_count
+            else:
+                binary_valid = triangle_count > 0
         valid = ascii_valid or binary_valid
         return {
             "id": check_id,
