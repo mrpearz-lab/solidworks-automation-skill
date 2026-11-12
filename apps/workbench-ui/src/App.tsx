@@ -395,7 +395,14 @@ const codexOutputs: Record<CodexConfig["expectedOutput"], string> = {
 };
 
 function resolvedExpectedOutput(config: CodexConfig) {
-  if (config.expectedOutput === "cad_files" && config.target === "assembly") return "SLDASM / STEP / STL";
+  if (config.expectedOutput === "cad_files") {
+    const formats = config.cadFormats ?? ["sldprt", "step", "stl"];
+    const labels = { sldprt: config.target === "assembly" ? "SLDASM" : "SLDPRT", step: "STEP", stl: "STL" };
+    return (["sldprt", "step", "stl"] as const)
+      .filter((format) => formats.includes(format))
+      .map((format) => labels[format])
+      .join(" / ");
+  }
   return codexOutputs[config.expectedOutput];
 }
 
@@ -945,6 +952,7 @@ function App() {
     cadApplication: "auto",
     target: "auto",
     expectedOutput: "auto",
+    cadFormats: ["sldprt", "step", "stl"],
     process: "auto",
     material: "auto",
     unit: "mm",
@@ -3541,6 +3549,33 @@ function App() {
                     ))}
                   </div>
                 </div>
+                {codexConfig.expectedOutput === "cad_files" && (
+                  <div className="bridge-field">
+                    <span>CAD 文件格式</span>
+                    <div className="segmented-control output-control">
+                      {([
+                        ["sldprt", "SLDPRT（SolidWorks 原生）"],
+                        ["step", "STEP（通用交换）"],
+                        ["stl", "STL（网格/3D 打印）"],
+                      ] as const).map(([value, label]) => {
+                        const current = codexConfig.cadFormats ?? ["sldprt", "step", "stl"];
+                        const next = current.includes(value)
+                          ? current.filter((format) => format !== value)
+                          : [...current, value];
+                        return (
+                          <button
+                            type="button"
+                            className={current.includes(value) ? "active" : ""}
+                            key={value}
+                            onClick={() => updateCodexConfig({ cadFormats: next.length ? next : ["sldprt", "step", "stl"] })}
+                          >
+                            {label}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 <label className="bridge-field wide">
                   <span>输出目录</span>
                   <div className="output-path-row">

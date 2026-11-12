@@ -96,6 +96,7 @@ export type CodexConfig = {
   cadApplication: "auto" | "solidworks" | "autocad" | "both";
   target: "auto" | "general_part" | "assembly" | "shell" | "fixture" | "sheet_metal" | "holes" | "drawing" | "package" | "reverse" | "skill";
   expectedOutput: "auto" | "cad_files" | "drawing_package" | "research_report";
+  cadFormats: ("sldprt" | "step" | "stl")[];
   process: "auto" | "FDM" | "SLA" | "CNC" | "sheet_metal";
   material: "auto" | "PLA" | "PETG" | "ABS" | "Al6061";
   unit: "mm";
