@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any, Callable, Sequence
 
 
-SUPPORTED_PROVIDER_IDS = ("codex", "claude", "gemini", "opencode")
+SUPPORTED_PROVIDER_IDS = ("codex", "claude", "gemini", "opencode", "agy")
 REQUIRED_RESULT_FIELDS = {"summary", "changedFiles", "verification", "risks", "nextSteps"}
 
 
@@ -82,6 +82,14 @@ def resolve_provider(provider_id: str) -> AgentProvider:
         if command is None and appdata:
             command = _node_command(appdata / "npm" / "node_modules" / "@google" / "gemini-cli" / "dist" / "index.js")
         metadata = ("Gemini CLI", "gemini-headless-v1", False, True)
+    elif provider_id == "agy":
+        env_bin = os.environ.get("AGY_BIN")
+        local_app = Path(os.environ["LOCALAPPDATA"]) if os.environ.get("LOCALAPPDATA") else None
+        agy_default = local_app / "agy" / "bin" / "agy.exe" if local_app else None
+        command = _first_executable(
+            [item for item in (env_bin, agy_default, "agy.exe", "agy") if item]
+        )
+        metadata = ("AGY", "agy-print-v1", True, True)
     else:
         env_bin = os.environ.get("OPENCODE_BIN")
         npm_binary = appdata / "npm" / "node_modules" / "opencode-ai" / "bin" / "opencode.exe" if appdata else None
@@ -152,6 +160,20 @@ def build_provider_command(
         command.append("yolo" if sandbox == "danger-full-access" else "auto_edit")
         if model:
             command.extend(["--model", model])
+    elif provider.id == "agy":
+        command.extend(
+            [
+                "-p",
+                prompt,
+                "--output-format",
+                "json",
+                "--json-schema",
+                schema_path.read_text(encoding="utf-8"),
+                "--sandbox" if sandbox != "danger-full-access" else "--dangerously-skip-permissions",
+            ]
+        )
+        # agy 默认模型走 Gemini 后端，当前地区不可用；缺省落到实测可用的 Claude 系模型。
+        command.extend(["--model", model or "claude-sonnet-5-5-low"])
     else:
         command.extend(["run", "--format", "json", "--dir", str(cwd)])
         if sandbox == "danger-full-access":

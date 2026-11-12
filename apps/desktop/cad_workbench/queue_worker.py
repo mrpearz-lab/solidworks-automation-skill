@@ -982,16 +982,17 @@ def run_agent_job(
     if runner is None:
         provider = resolve_provider(provider_id)
     else:
-        names = {"codex": "Codex", "claude": "Claude Code", "gemini": "Gemini CLI", "opencode": "OpenCode"}
+        names = {"codex": "Codex", "claude": "Claude Code", "gemini": "Gemini CLI", "opencode": "OpenCode", "agy": "AGY"}
         protocols = {
             "codex": "codex-exec-v1",
             "claude": "claude-print-v1",
             "gemini": "gemini-headless-v1",
             "opencode": "opencode-jsonl-v1",
+            "agy": "agy-print-v1",
         }
         if provider_id not in names:
             raise ValueError(f"不支持的 Agent Provider: {provider_id}")
-        provider = AgentProvider(provider_id, names[provider_id], protocols[provider_id], provider_id in {"codex", "claude"}, True, (provider_id,))
+        provider = AgentProvider(provider_id, names[provider_id], protocols[provider_id], provider_id in {"codex", "claude", "agy"}, True, (provider_id,))
     prompt_job = dict(job)
     runtime = job.get("_runtime") if isinstance(job.get("_runtime"), dict) else {}
     job_path = Path(str(runtime["jobPath"])) if runtime.get("jobPath") else None
