@@ -288,7 +288,10 @@ const agentProviderCatalog: Record<AgentProviderId, { name: string; company: str
       { value: "claude-sonnet-5-5-low", label: "Claude Sonnet 5.5 (Low)" },
       { value: "claude-sonnet-5-5-medium", label: "Claude Sonnet 5.5 (Medium)" },
       { value: "claude-sonnet-5-5-high", label: "Claude Sonnet 5.5 (High)" },
+      { value: "claude-opus-5-5-low", label: "Claude Opus 5.5 (Low)" },
       { value: "claude-opus-5-5-medium", label: "Claude Opus 5.5 (Medium)" },
+      { value: "claude-opus-5-5-high", label: "Claude Opus 5.5 (High)" },
+      { value: "gpt-oss-120b-medium", label: "GPT-OSS 120B (Medium)" },
     ],
   },
 };
